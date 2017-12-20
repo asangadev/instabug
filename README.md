@@ -1,21 +1,29 @@
-Cordova Instabug Plugin
+Instabug Cordova Plugin
 =================================
 
-The purpose of this plugin is to simplify the process of integrating the Instabug SDK in a hybrid application, as well as to provide an interface to interfacing with the SDK through JavaScript.
+The purpose of this plugin is to simplify the process of integrating the Instabug SDK in a hybrid application, as well as to provide an interface to interact with the SDK through JavaScript.
 
+Instabug is a bug reporting and in-app feedback tool that provides your testers and users with easy “shake to send” feedback from within the app, to [report bugs and issues easily](https://instabug.com/bug-reporting). You’ll get attached screenshots, screen recordings, annotations, network logs to help you take insightful decisions. You’ll also receive all the device details, environment snapshots and bug reproduction steps so that you can fix bugs and iterate faster.
+
+For more info, visit [Instabug.com](https://instabug.com).
 
 ### Installation
 Currently, this plugin can only be installed via the Command-Line Interface.
 ```
 cordova plugin add https://github.com/Instabug/instabug-cordova
 ```
+
 ## Usage
-To initialize Instabug in your app, you need to do the following: 
+To initialize Instabug in your app, you need to do the following:
 
 ### Android
-Change the name of the application class in your manifest file to ```android:name="com.instabug.cordova.plugin.MyApplication"```. You only need to add your app token in the __MyApplication__ class, by replacing ```YOUR_ANDROID_TOKEN```. You can change the invocation event by changing this line ```InstabugInvocationEvent.FLOATING_BUTTON``` in the __MyApplication__ class to any of the following: 
+1. Change the name of the application class in your AndroidManifest.xml file to ```android:name="com.instabug.cordova.plugin.MyApplication"```.
 
-```InstabugInvocationEvent.SHAKE```, ```InstabugInvocationEvent.SCREENSHOT_GESTURE```, ```InstabugInvocationEvent.TWO_FINGER_SWIPE_LEFT```, or ```InstabugInvocationEvent.NONE```. 
+2. You need to add your app token in the __MyApplication__ class, by replacing ```YOUR_ANDROID_TOKEN```. (You can find this class under this path  ```YourProjectName/plugins/com.instabug.cordova.plugin/src/android/MyApplication.java```)
+
+3. You can change the invocation event by changing this line ```InstabugInvocationEvent.SHAKE``` in the __MyApplication__ class to any of the following:
+
+```InstabugInvocationEvent.FLOATING_BUTTON```, ```InstabugInvocationEvent.SCREENSHOT_GESTURE```, ```InstabugInvocationEvent.TWO_FINGER_SWIPE_LEFT```, or ```InstabugInvocationEvent.NONE```.
 
 ### iOS
 You can initialize the SDK by using this method in your JS class
@@ -33,11 +41,10 @@ cordova.plugins.instabug.activate(
     }
 );
 ```
- You can change the invocation event with any of the following: ```'button'```, ```'screenshot'```, ```'swipe'```, or ```'swipe'```.
+ You can change the invocation event with any of the following: ```'button'```, ```'screenshot'```, ```'swipe'```, or ```'shake'```.
 
 ## License
 
 This software is released under the <a href="http://opensource.org/licenses/Apache-2.0">Apache 2.0 License</a>.
 
 © 2016 Instabug. All rights reserved.
-

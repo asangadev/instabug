@@ -48,7 +48,7 @@ Instabug.activate = function (token, event, options, success, error) {
     var validatedEvent = getInvocationEvents()[event];
 
     if (validatedEvent) {
-        exec(success, error, 'IBGPlugin', 'activate', [options]);
+        exec(success, error, 'IBGPlugin', 'activate', [token, event, options]);
     } else {
         console.log('Could not activate Instabug - invocation event "' + event + '" is not valid.');
     }
@@ -117,6 +117,30 @@ Instabug.enable = function (success, error) {
 
 Instabug.isEnabled = function (success, error) {
     exec(success, error, 'IBGPlugin', 'isEnabled', []);
+};
+
+Instabug.setUserAttribute = function (key, value, success, error) {
+    exec(success, error, 'IBGPlugin', 'setUserAttribute', [key, value]);
+};
+
+Instabug.removeUserAttribute = function (key, success, error) {
+    exec(success, error, 'IBGPlugin', 'removeUserAttribute', [key]);
+};
+
+Instabug.getAllUserAttributes = function (success, error) {
+    exec(success, error, 'IBGPlugin', 'getAllUserAttributes', []);
+};
+
+Instabug.getUserAttribute = function (key, success, error) {
+    exec(success, error, 'IBGPlugin', 'getUserAttribute', [key]);
+};
+
+Instabug.identifyUserWithEmail = function (email, name, success, error) {
+    exec(success, error, 'IBGPlugin', 'identifyUserWithEmail', [email, name]);
+};
+
+Instabug.logOut = function (success, error) {
+    exec(success, error, 'IBGPlugin', 'logOut', []);
 };
 
 Instabug.setDebugEnabled = function (isDebugEnabled, success, error) {

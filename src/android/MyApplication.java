@@ -18,7 +18,7 @@ public class MyApplication extends MultiDexApplication
     {
         new Instabug.Builder(
                 this,
-                "ANDROID_APP_TOKEN",
+                "3f1fa742d0fb39df4d67b8e1e07573fe",
                 InstabugInvocationEvent.SHAKE
         ).setFloatingButtonEdge(InstabugFloatingButtonEdge.LEFT).setFloatingButtonOffsetFromTop(250).build();
         Instabug.setPrimaryColor(Color.parseColor("#1D82DC"));

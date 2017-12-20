@@ -3,6 +3,7 @@ package com.instabug.cordova.plugin;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.util.Log;
 
 import com.instabug.library.Instabug;
 import com.instabug.library.invocation.InstabugInvocationEvent;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.Integer;
+import java.util.HashMap;
 
 /**
  * This plugin initializes Instabug.  
@@ -124,8 +126,26 @@ public class IBGPlugin extends CordovaPlugin {
         } else if ("isEnabled".equals(action)) {
             getIsEnabled(callbackContext);
             
+        } else if ("setUserAttribute".equals(action)) {
+            setUserAttribute(callbackContext, args.optString(0), args.optString(1));
+            
         } else if ("setDebugEnabled".equals(action)) {
             setDebugEnabled(callbackContext, args.optBoolean(0));
+            
+        } else if ("removeUserAttribute".equals(action)) {
+            removeUserAttribute(callbackContext, args.optString(0));
+            
+        }  else if ("identifyUserWithEmail".equals(action)) {
+            identifyUserWithEmail(callbackContext, args.optString(0), args.optString(1));
+            
+        }  else if ("logOut".equals(action)) {
+            logOut(callbackContext);
+            
+        }  else if ("getAllUserAttributes".equals(action)) {
+            getAllUserAttributes(callbackContext);
+            
+        } else if ("getUserAttribute".equals(action)) {
+            getUserAttribute(callbackContext, args.optString(0));
             
         } else {
             // Method not found.
@@ -142,7 +162,7 @@ public class IBGPlugin extends CordovaPlugin {
      *        Used when calling back into JavaScript
      */
     private void activate(final CallbackContext callbackContext, JSONArray args) {
-        this.options = args.optJSONObject(0);
+        this.options = args.optJSONObject(2);
         if (options != null) {
             // Attach extras
             applyOptions();
@@ -228,6 +248,7 @@ public class IBGPlugin extends CordovaPlugin {
      * @param email
      *        User's default email
      */
+    @Deprecated
     private void setUserEmail(final CallbackContext callbackContext, String email) {
         if (email != null && email.length() > 0) {
             try {
@@ -247,6 +268,7 @@ public class IBGPlugin extends CordovaPlugin {
      * @param name
      *        User's name
      */
+    @Deprecated
     private void setUserName(final CallbackContext callbackContext, String name) {
         if (name != null && name.length() > 0) {
             try {
@@ -256,6 +278,45 @@ public class IBGPlugin extends CordovaPlugin {
                 callbackContext.error(errorMsg);
             }
         } else callbackContext.error("A name must be provided.");
+    }
+
+    /**
+     * Set the user identity.
+     * Instabug will pre-fill the user email in reports.
+     *
+     * @param callbackContext 
+     *        Used when calling back into JavaScript
+     * @param email    
+     *        User's default email
+     * @param name     
+     *        Username
+     *
+     */
+    private void identifyUserWithEmail(final CallbackContext callbackContext, String email, String name) {
+        if (name != null && name.length() > 0 && email != null && email.length() > 0) {
+            try {
+                Instabug.identifyUser(name, email);
+                callbackContext.success();
+            } catch (IllegalStateException e) {
+                callbackContext.error(errorMsg);
+            }
+        } else callbackContext.error("A name and email must be provided.");
+    }
+
+
+    /**
+     * Logout User
+     * 
+     * @param callbackContext 
+     *        Used when calling back into JavaScript
+     */
+    private void logOut(final CallbackContext callbackContext) {
+        try {
+            Instabug.logoutUser();
+            callbackContext.success();
+        } catch (IllegalStateException e) {
+            callbackContext.error(errorMsg);
+        }
     }
 
     /**
@@ -436,6 +497,76 @@ public class IBGPlugin extends CordovaPlugin {
         try {
             Instabug.setDebugEnabled(isDebugEnabled);
             callbackContext.success();
+        } catch (IllegalStateException e) {
+            callbackContext.error(errorMsg);
+        }
+    }
+
+    /**
+     * Sets user attribute to overwrite it's value or create a new one if it doesn't exist.
+     *
+     * @param callbackContext 
+     *        Used when calling back into JavaScript
+     * @param key   the attribute
+     * @param value the value
+     * 
+     */
+    private void setUserAttribute(final CallbackContext callbackContext, String key, String value) {
+        try {
+            Instabug.setUserAttribute(key,value);
+            callbackContext.success();
+        } catch (IllegalStateException e) {
+            callbackContext.error(errorMsg);
+        }
+    }
+
+    /**
+     * Removes user attribute if exists.
+     *
+     * @param callbackContext 
+     *        Used when calling back into JavaScript
+     * @param key the attribute key as string
+     * 
+     */
+    private void removeUserAttribute(final CallbackContext callbackContext, String key) {
+        try {
+            Instabug.removeUserAttribute(key);
+            callbackContext.success();
+        } catch (IllegalStateException e) {
+            callbackContext.error(errorMsg);
+        }
+    }
+
+
+    /**
+     * Gets all saved user attributes.
+     *
+     * @param callbackContext 
+     *        Used when calling back into JavaScript
+     */
+    private void getAllUserAttributes(final CallbackContext callbackContext) {
+        try {
+            HashMap userAttributes = Instabug.getAllUserAttributes();
+            JSONObject jsonUserAttributes = new JSONObject(userAttributes);
+            callbackContext.success(jsonUserAttributes);
+        } catch (IllegalStateException e) {
+            callbackContext.error(errorMsg);
+        }
+    }
+
+    /**
+     * Gets specific user attribute.
+     *
+     * @param callbackContext 
+     *        Used when calling back into JavaScript
+     * @param key 
+     *        the attribute key as string
+     *
+     */
+    private void getUserAttribute(final CallbackContext callbackContext, String key) {
+        try {
+            String userAttribute = Instabug.getUserAttribute(key);
+            callbackContext.success(userAttribute);
         } catch (IllegalStateException e) {
             callbackContext.error(errorMsg);
         }
